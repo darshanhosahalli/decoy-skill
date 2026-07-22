@@ -98,14 +98,28 @@ Each distinct branch = one additional scenario.
 
 ## Step 5 — Build the scenario list
 
-For every endpoint, always include at minimum:
+For every endpoint, always include the following scenarios. The first six are universal — generate them for every endpoint regardless of the code:
 
-1. **Success** — full realistic data, all mandatory fields, optional fields included
-2. **Empty state** — empty arrays, null optional fields, zero counts
-3. **Not found** — status 404, `{ "error": "Not found" }`
-4. **Server error** — status 500, `{ "error": "Internal server error" }`
-5. **One scenario per enum value** found in the response type
-6. **One scenario per branching condition** found in the response handler
+### Universal scenarios (every endpoint)
+
+| # | Title suffix | status | latency | responsePayload |
+|---|---|---|---|---|
+| 1 | success | 200 | 200 | Full realistic data |
+| 2 | empty state | 200 | 200 | Empty array `[]` or `{}` |
+| 3 | slow — 30s | 200 | 30000 | Same as success |
+| 4 | slow — 40s | 200 | 40000 | Same as success |
+| 5 | slow — 60s | 200 | 60000 | Same as success |
+| 6 | 401 unauthorized | 401 | 100 | `{ "error": "Unauthorized" }` |
+| 7 | 405 method not allowed | 405 | 100 | `{ "error": "Method Not Allowed" }` |
+| 8 | 429 rate limited | 429 | 100 | `{ "error": "Too Many Requests", "retryAfter": 60 }` |
+| 9 | 500 server error | 500 | 100 | `{ "error": "Internal server error" }` |
+| 10 | 502 bad gateway | 502 | 100 | `{ "error": "Bad Gateway" }` |
+
+### Code-derived scenarios (from branching logic)
+
+11. **Not found** — status 404, `{ "error": "Not found" }` — if code handles 404
+12. **One scenario per enum value** found in the response type
+13. **One scenario per branching condition** found in the response handler
 
 ## Step 6 — Output the preset file
 
